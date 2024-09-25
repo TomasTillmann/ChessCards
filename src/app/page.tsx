@@ -1,6 +1,5 @@
 'use server'
 
-import PocketBase from 'pocketbase';
 import Link from "next/link";
 
 type Book = {
@@ -9,12 +8,12 @@ type Book = {
 };
 
 export default async function Books() {
-    const pb = new PocketBase('http://127.0.0.1:8090');
+    const res = await fetch('http://127.0.0.1:8090/api/collections/books/records');
+    if (!res.ok) {
+        throw new Error('Failed to fetch books');
+    }
 
-    const books: Book[] = await pb.collection('books').getFullList<Book>({
-        sort: '-created',
-    });
-    console.log(books);
+    const books: Book[] = (await res.json()).items;
 
     return (
         <ul>
