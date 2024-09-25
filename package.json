@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "chess.js": "^1.0.0-beta.8",
+    "chessboardjsx": "^2.4.7",
     "next": "14.2.13",
     "pocketbase": "^0.21.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-chessboard": "^4.7.1",
+    "react-dom": "^18",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",
