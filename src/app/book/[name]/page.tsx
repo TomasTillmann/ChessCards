@@ -2,22 +2,13 @@
 
 import PocketBase from 'pocketbase';
 import Link from "next/link";
-
-type Params = {
-    name: string;
-};
-
-type Puzzle = {
-    id: string;
-    fen: string;
-};
+import {Puzzle} from "@/app/types/Puzzle";
 
 // export default function Page({ params }: { params: { name: string } }) {
 //     return <div>My Post: {params.name}</div>
 // }
 
 export default async function Book({ params }: { params: { name: string } }) {
-    console.log("HI");
     const { name } = params;
     const pb = new PocketBase('http://127.0.0.1:8090');
 
@@ -30,7 +21,7 @@ export default async function Book({ params }: { params: { name: string } }) {
         <ul>
             {puzzles.map((puzzle) => (
                 <li key={puzzle.id}>
-                    <Link href="">
+                    <Link href={`${name}/${puzzle.id}`}>
                         {puzzle.fen}
                     </Link>
                 </li>
