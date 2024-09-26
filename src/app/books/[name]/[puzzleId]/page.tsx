@@ -1,7 +1,7 @@
 'use client'
 
 import useSWR from 'swr'
-import { ChessboardAnalysis } from "@/app/Components/ChessboardAnalysis/ChessboardAnalysis";
+import {ChessboardAnalysis} from "@/app/Components/ChessboardAnalysis/ChessboardAnalysis";
 
 // @ts-expect-error
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
