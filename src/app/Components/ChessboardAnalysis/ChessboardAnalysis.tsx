@@ -2,7 +2,7 @@
 
 import {Chessboard} from "react-chessboard";
 import {Chess} from "chess.js";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -70,6 +70,44 @@ class FensTree {
 }
 
 export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position }) => {
+    const onMoveBack = () => {
+        fensTree.moveBack();
+        setFensTree(fensTree);
+        const fenNode : FenNode = fensTree.getCurrent();
+        game.load(fenNode.fen);
+        setGame(game);
+        setFen(fenNode.fen);
+    }
+
+    const onMoveForward = () => {
+        fensTree.moveNext();
+        setFensTree(fensTree);
+        const fenNode : FenNode = fensTree.getCurrent();
+        game.load(fenNode.fen);
+        setGame(game);
+        setFen(fenNode.fen);
+    }
+
+    const movePiecesByArrows = (event: KeyboardEvent) => {
+        switch (event.key) {
+            case 'ArrowLeft':
+                onMoveBack();
+                console.log('Left arrow pressed');
+                break;
+            case 'ArrowRight':
+                onMoveForward();
+                console.log('Right arrow pressed');
+                break;
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', movePiecesByArrows);
+        return () => {
+            window.removeEventListener('keydown', movePiecesByArrows);
+        };
+    }, []);
+
     const [fen, setFen] = useState(position);
     const [game, setGame] = useState(new Chess(position));
     const [fensTree, setFensTree] = useState(new FensTree(fen));
@@ -118,30 +156,10 @@ export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position
                 onPieceDrop={onDrop}
                 animationDuration={0}
             />
-            <Button onClick={() => {
-                fensTree.moveBack();
-                setFensTree(fensTree);
-                const fenNode : FenNode = fensTree.getCurrent();
-                game.load(fenNode.fen);
-                setGame(game);
-
-                console.log(new Chess(fenNode.fen).ascii());
-
-                setFen(fenNode.fen);
-            }}>
+            <Button onClick={onMoveBack}>
                 <ArrowBackIosIcon/>
             </Button>
-            <Button onClick={() => {
-                fensTree.moveNext();
-                setFensTree(fensTree);
-                const fenNode : FenNode = fensTree.getCurrent();
-                game.load(fenNode.fen);
-                setGame(game);
-
-                console.log(new Chess(fenNode.fen).ascii());
-
-                setFen(fenNode.fen);
-            }}>
+            <Button onClick={onMoveForward}>
                 <ArrowForwardIosIcon/>
             </Button>
         </>
