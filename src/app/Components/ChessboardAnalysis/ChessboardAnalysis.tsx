@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {Button} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import {FensTree, FenNode} from "@/app/Components/ChessboardAnalysis/FensTree";
 
 type Move = {
     from: string
@@ -17,65 +18,26 @@ type ChessboardAnalysisProps = {
     position: string
 }
 
-type FenNode = {
-    fen: string
-    move: string | null
-    parent: FenNode | null
-    children: FenNode[]
-}
-
-class FensTree {
-    private current: FenNode;
-
-    constructor(initialPositionFen: string) {
-        this.current = {
-            fen: initialPositionFen,
-            move: null,
-            parent: null,
-            children: []
-        }
-    }
-
-    public addFen(fen: string, move: string) {
-        const next: FenNode = {
-            fen: fen,
-            move: move,
-            parent: this.current,
-            children: []
-        }
-
-        this.current.children.push(next);
-        this.current = next;
-    }
-
-    public moveNext() {
-        if (this.current.children.length != 0) {
-            this.current = this.current.children[0];
-        }
-    }
-
-    public moveBack() {
-        if (this.current.parent != null) {
-            this.current = this.current.parent;
-        }
-    }
-
-    public moveTo(fenNode: FenNode) {
-        this.current = fenNode;
-    }
-
-    public getCurrent() : FenNode {
-        return this.current;
-    }
-}
-
 export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position }) => {
+    // Arrow key handler
+    const movePiecesByArrows = (event: KeyboardEvent) => {
+        switch (event.key) {
+            case 'ArrowLeft':
+                onMoveBack();
+                break;
+            case 'ArrowRight':
+                onMoveForward();
+                break;
+        }
+    };
+
     const onMoveBack = () => {
         fensTree.moveBack();
         setFensTree(fensTree);
         const fenNode : FenNode = fensTree.getCurrent();
         game.load(fenNode.fen);
         setGame(game);
+        // console.log(new Chess(fenNode.fen).ascii());
         setFen(fenNode.fen);
     }
 
@@ -86,20 +48,9 @@ export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position
         game.load(fenNode.fen);
         setGame(game);
         setFen(fenNode.fen);
+        // console.log(new Chess(fenNode.fen).ascii());
+        setFen(fenNode.fen);
     }
-
-    const movePiecesByArrows = (event: KeyboardEvent) => {
-        switch (event.key) {
-            case 'ArrowLeft':
-                onMoveBack();
-                console.log('Left arrow pressed');
-                break;
-            case 'ArrowRight':
-                onMoveForward();
-                console.log('Right arrow pressed');
-                break;
-        }
-    };
 
     useEffect(() => {
         window.addEventListener('keydown', movePiecesByArrows);
@@ -107,11 +58,18 @@ export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position
             window.removeEventListener('keydown', movePiecesByArrows);
         };
     }, []);
+    //
 
+    // currently shown position on the Chessboard, represented as FEN
     const [fen, setFen] = useState(position);
+
+    // chess game, to validate legal moves etc ...
     const [game, setGame] = useState(new Chess(position));
+
+    // tree of variations, each node is a fen and a move which was made from previous position (parent) to obtain it
     const [fensTree, setFensTree] = useState(new FensTree(fen));
 
+    // When piece is dropped on the board
     function onDrop (source: string, target: string) {
         const result = makeAMove({
             from: source,
@@ -125,17 +83,17 @@ export const ChessboardAnalysis: React.FC<ChessboardAnalysisProps> = ({ position
         }
 
         const lastMove: string | undefined = game.history().at(-1);
-        console.log(`lastMove: ${lastMove}`);
         if (lastMove == undefined) {
             throw new Error("Panick! lastMove is undefined, but this cannot happen, since at least this move had to be made!");
         }
 
         fensTree.addFen(game.fen(), lastMove);
         setFensTree(fensTree);
-        console.log(new Chess(game.fen()).ascii());
+        // console.log(new Chess(game.fen()).ascii());
         return true;
     }
 
+    // makes a move on the chessboard, also updates the board
     function makeAMove(move: Move) {
         let result;
 
