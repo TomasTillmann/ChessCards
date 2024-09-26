@@ -4,8 +4,23 @@ import {Chessboard} from "react-chessboard";
 import {Chess} from "chess.js";
 import {useState} from "react";
 
+import ChessAnalysisBoard from 'react-chess-analysis-board'
+import './style.scss';
 
-export const ChessboardLegal = ({ position }) => {
+export const ChessboardAnalysis = ({ position }) => {
+    return (
+        <ChessAnalysisBoard
+            config={{
+                boardConfig: {
+                    fen: position
+                }
+            }}
+        />
+    )
+}
+
+/// OLD ??
+export const ChessboardLegalOld = ({ position }) => {
     const [fen, setFen] = useState(position);
     const [game, setGame] = useState(new Chess(position));
 
@@ -25,7 +40,6 @@ export const ChessboardLegal = ({ position }) => {
     }
 
     function makeAMove(move) {
-        console.log("one line above move");
         let result;
 
         try {
@@ -39,14 +53,9 @@ export const ChessboardLegal = ({ position }) => {
     }
 
     return (
-        <>
-            <h1>ChessBoardLegal</h1>
-            <div style={{ display: "flex", justifyContent: "space-between", width: "30%", height: "30%" }}>
-                <Chessboard
-                    position={fen}
-                    onPieceDrop={onDrop}
-                />
-            </div>
-        </>
+        <Chessboard
+            position={fen}
+            onPieceDrop={onDrop}
+        />
     );
 }

@@ -15,8 +15,10 @@
     "next": "14.2.13",
     "pocketbase": "^0.21.5",
     "react": "^18",
+    "react-chess-analysis-board": "^0.0.21",
     "react-chessboard": "^4.7.1",
     "react-dom": "^18",
+    "sass": "^1.79.3",
     "swr": "^2.2.5"
   },
   "devDependencies": {

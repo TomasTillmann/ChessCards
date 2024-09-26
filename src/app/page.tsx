@@ -19,7 +19,7 @@ export default async function Books() {
         <ul>
             {books.map((book) => (
                 <li key={book.id}>
-                    <Link href={`book/${book.name}`}>
+                    <Link href={`books/${book.name}`}>
                         {book.name}
                     </Link>
                 </li>
