@@ -1,4 +1,4 @@
-export class FensTree {
+export class GameTree {
     private current: FenNode;
 
     constructor(initialPositionFen: string) {

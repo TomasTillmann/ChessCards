@@ -26,7 +26,7 @@ export default function PuzzleComponent({ params }: { params: { puzzleId: string
 
     return (
         <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: 100}}>
-            <div style={{width: "30%", height: "30%"}}>
+            <div style={{width: "800px", height: "800px"}}>
                 <ChessboardAnalysis
                     position={puzzle.fen}
                 />
